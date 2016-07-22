@@ -1,0 +1,12 @@
+<phpunit bootstrap="tests/bootstrap.php" colors="true">
+    <testsuites>
+        <testsuite name="AuthRocket/php">
+            <directory>.</directory>
+        </testsuite>
+    </testsuites>
+    <filter>
+      <whitelist>
+        <directory>lib</directory>
+      </whitelist>
+    </filter>
+</phpunit>

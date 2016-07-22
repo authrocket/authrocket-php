@@ -1,0 +1,4 @@
+deploy/
+bin/
+vendor/
+composer.lock
