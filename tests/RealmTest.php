@@ -29,6 +29,13 @@ class RealmTest extends TestCase {
     $this->assertNull($res->made_up_field);
   }
 
+  /**
+   * @expectedException AuthRocket\RecordNotFound
+   */
+  function testInvalidFind() {
+    $res = $this->client->realms->find('rl_invalid');
+  }
+
   function testCreate() {
     $res = $this->client->realms->create(['name'=>'hello '.rand()]);
     $this->assertNoError($res);
@@ -61,9 +68,6 @@ class RealmTest extends TestCase {
 
     $res = $this->client->realms->reset($this->realm->id);
     $this->assertNoError($res);
-    $res = $this->client->orgs->all();
-    $this->assertNoError($res);
-    $this->assertEquals(0, count($res->results));
   }
 
 }
