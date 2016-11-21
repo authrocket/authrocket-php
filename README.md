@@ -9,9 +9,17 @@ The `authrocket` PHP library covers all of our Core API. It also covers select p
 
 The library is designed to be installed using `composer`. It should also be usable using any other method typically supported by composer-compatible packages.
 
-For installation, run `php composer.phar require authrocket/authrocket`.
+For installation, run:
+```bash
+composer require authrocket/authrocket
 
-Alternatively, add `"authrocket/authrocket": "<2"` to the `require` section of your composer.json and run `php composer.phar install`.
+# alternate:
+php composer.phar require authrocket/authrocket
+```
+
+Or, add `"authrocket/authrocket": "<2"` to the `require` section of your composer.json and run `composer install`.
+
+You can also download `authrocket.phar`, a .zip, or a .tar.gz of the latest release directly from GitHub: https://github.com/authrocket/authrocket-php/releases/latest
 
 
 ## Client Basics
