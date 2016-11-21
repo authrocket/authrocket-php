@@ -7,6 +7,7 @@ namespace AuthRocket;
 class TestCase extends \PHPUnit_Framework_TestCase {
 
   static function setUpBeforeClass() {
+    error_reporting(E_ALL);
     self::buildClient();
   }
 
@@ -36,7 +37,7 @@ class TestCase extends \PHPUnit_Framework_TestCase {
   protected static $ar_client;
   protected $client;
 
-  protected function buildClient() {
+  protected static function buildClient() {
     self::$ar_client = AuthRocket::autoConfigure();
     // self::$ar_client->debug = true;
   }

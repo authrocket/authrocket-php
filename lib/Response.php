@@ -71,7 +71,7 @@ class Response {
   }
 
   function __get($name) {
-    return $this->fields[$name];
+    return isset($this->fields[$name]) ? $this->fields[$name] : null;
   }
 
   function hasMore() {

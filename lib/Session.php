@@ -23,7 +23,12 @@ class Session extends Resource {
       return null;
     }
     $jwt = (array) $jwt;
-    
+
+    foreach (['aud', 'fn', 'ln', 'm'] as $attr) {
+      if (!isset($jwt[$attr]))
+        $jwt[$attr] = null;
+    }
+
     $user = [
       'object'     => 'user',
       'id'         => $jwt['uid'],

@@ -53,7 +53,7 @@ class AuthRocket {
   }
 
   function __construct(array $params) {
-    $this->config['jwtSecret'] = $params['jwtSecret'];
+    $this->config['jwtSecret'] = isset($params['jwtSecret']) ? $params['jwtSecret'] : null;
 
     $this->config['headers'] = [
       'Accept-Encoding' => 'gzip',
@@ -67,7 +67,7 @@ class AuthRocket {
       $this->config['headers']['X-Authrocket-Realm'] = $params['realm'];
 
     $this->config['url'] = $params['url'];
-    if ($this->config['url'][-1] != '/')
+    if ($this->config['url'][strlen($this->config['url'])-1] != '/')
       $this->config['url'] .= '/';
     $this->config['verifySsl'] = !isset($params['verifySsl']) || $params['verifySsl'];
 
@@ -105,31 +105,31 @@ class AuthRocket {
 
   public function get($url, $params=null) {
     $res = $this->getApi()->get($url, ['query'=>$params]);
-    $this->checkError($res);
+    $this->checkError($res, $url);
     return Response::parseResponse($res);
   }
 
   public function post($url, $fields=null) {
     $res = $this->getApi()->post($url, ['json'=>$fields]);
-    $this->checkError($res);
+    $this->checkError($res, $url);
     return Response::parseResponse($res);
   }
 
   public function put($url, $fields=null) {
     $res = $this->getApi()->put($url, ['json'=>$fields]);
-    $this->checkError($res);
+    $this->checkError($res, $url);
     return Response::parseResponse($res);
   }
 
   public function delete($url, $params=null) {
     $res = $this->getApi()->delete($url, ['json'=>$params]);
-    $this->checkError($res);
+    $this->checkError($res, $url);
     return Response::parseResponse($res);
   }
 
 
 
-  private function checkError($res) {
+  private function checkError($res, $url='') {
     $code = $res->getStatusCode();
     switch ($code) {
       case 401:
@@ -142,7 +142,7 @@ class AuthRocket {
         throw new Error("Access denied; check your API credentials and permissions");
         break;
       case 404:
-        throw new RecordNotFound("Not found: ".$res->metadata['url']);
+        throw new RecordNotFound("Not found: ".$url);
         break;
       case 409:
       case 422:
