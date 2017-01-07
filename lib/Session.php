@@ -24,7 +24,7 @@ class Session extends Resource {
     }
     $jwt = (array) $jwt;
 
-    foreach (['aud', 'fn', 'ln', 'm'] as $attr) {
+    foreach (['aud', 'cs', 'fn', 'ln', 'm'] as $attr) {
       if (!isset($jwt[$attr]))
         $jwt[$attr] = null;
     }
@@ -36,23 +36,30 @@ class Session extends Resource {
       'username'   => $jwt['un'],
       'first_name' => $jwt['fn'],
       'last_name'  => $jwt['ln'],
-      'name'       => $jwt['n']
+      'name'       => $jwt['n'],
+      'custom'     => $jwt['cs']
     ];
     if ($jwt['m']) {
       $mbs = $user['memberships'] = [];
       foreach ($jwt['m'] as $m) {
+        foreach (['cs', 'o', 'oid', 'ocs', 'p'] as $attr) {
+          if (!isset($m[$attr]))
+            $m[$attr] = null;
+        }
         $m2 = [
           'object'      => 'membership',
           'permissions' => $m['p'],
           'user_id'     => $jwt['uid'],
-          'org_id'      => $m['oid']
+          'org_id'      => $m['oid'],
+          'custom'      => $m['cs']
         ];
-        if ($m['oid']) {
+        if ($m['o']) {
           $m2['org'] = [
             'object'   => 'org',
             'id'       => $m['oid'],
             'realm_id' => $jwt['aud'],
-            'name'     => $m['o']
+            'name'     => $m['o'],
+            'custom'   => $m['ocs']
           ];
         }
         array_push($mbs, $m2);
