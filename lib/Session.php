@@ -11,11 +11,11 @@ class Session extends Resource {
   }
 
   function fromToken($token, $params=[]) {
-    $jwtSecret = isset($params['jwtSecret']) ? $params['jwtSecret'] : $this->client->config['jwtSecret'];
+    $jwtSecret = isset($params['jwtSecret']) ? $params['jwtSecret'] : $this->client->getDefaultJwtSecret();
     if (!is_string($jwtSecret)) {
       throw new Error('Missing jwtSecret - must be provided via $params or new AuthRocket(...)');
     }
-    
+
     \Firebase\JWT\JWT::$leeway = 10;
     try {
       $jwt = \Firebase\JWT\JWT::decode($token, $jwtSecret, ['HS256']);

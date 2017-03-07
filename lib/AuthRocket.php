@@ -29,7 +29,7 @@ class RecordNotFound extends Error {}
 
 class AuthRocket {
 
-  const VERSION = '0.9.0';
+  const VERSION = '1.0.1';
 
 
   private $api;
@@ -53,7 +53,7 @@ class AuthRocket {
   }
 
   function __construct(array $params) {
-    $this->config['jwtSecret'] = isset($params['jwtSecret']) ? $params['jwtSecret'] : null;
+    $this->setDefaultJwtSecret(isset($params['jwtSecret']) ? $params['jwtSecret'] : null);
 
     $this->config['headers'] = [
       'Accept-Encoding' => 'gzip',
@@ -79,9 +79,17 @@ class AuthRocket {
     $this->users();
   }
 
-  public function setDefaultRealm($realm_id) {
+  public function getDefaultJwtSecret() {
+    return isset($this->config['jwtSecret']) ? $this->config['jwtSecret'] : null;
+  }
+
+  public function setDefaultJwtSecret($jwtSecret) {
+    $this->config['jwtSecret'] = $jwtSecret;
+  }
+
+  public function setDefaultRealm($realmId) {
     $this->api = null;
-    $this->config['headers']['X-Authrocket-Realm'] = $realm_id;
+    $this->config['headers']['X-Authrocket-Realm'] = $realmId;
   }
 
   protected function getApi() {

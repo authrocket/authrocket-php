@@ -9,6 +9,11 @@ class SessionTest extends TestCase {
     $this->createSession();
   }
 
+  function tearDown() {
+    $this->client->setDefaultJwtSecret(null);
+    parent::tearDown();
+  }
+
 
   function testAll() {
     $res = $this->client->sessions->all(['user_id'=>$this->user->id]);
@@ -29,6 +34,14 @@ class SessionTest extends TestCase {
     $this->assertNull($res);
 
     $res = $this->client->sessions->fromToken($this->session->token, ['jwtSecret'=>$this->realm->jwt_secret]);
+    $this->assertInstanceOf('\AuthRocket\Response', $res);
+    $this->assertEquals('session', $res->object);
+    $this->assertEquals('user', $res->user['object']);
+  }
+
+  function testFromTokenDefaultJwt() {
+    $this->client->setDefaultJwtSecret($this->realm->jwt_secret);
+    $res = $this->client->sessions->fromToken($this->session->token);
     $this->assertInstanceOf('\AuthRocket\Response', $res);
     $this->assertEquals('session', $res->object);
     $this->assertEquals('user', $res->user['object']);
