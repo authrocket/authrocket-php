@@ -16,9 +16,14 @@ class Session extends Resource {
       throw new Error('Missing jwtSecret - must be provided via $params or new AuthRocket(...)');
     }
 
+    if (strlen($jwtSecret) > 256)
+      $algo = ['RS256'];
+    else
+      $algo = ['HS256'];
+
     \Firebase\JWT\JWT::$leeway = 10;
     try {
-      $jwt = \Firebase\JWT\JWT::decode($token, $jwtSecret, ['HS256']);
+      $jwt = \Firebase\JWT\JWT::decode($token, $jwtSecret, $algo);
     } catch (\UnexpectedValueException $e) {
       return null;
     }
