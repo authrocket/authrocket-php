@@ -42,6 +42,7 @@ class Session extends Resource {
     if ($jwt['m']) {
       $mbs = $user['memberships'] = [];
       foreach ($jwt['m'] as $m) {
+        $m = (array)$m;
         foreach (['cs', 'o', 'oid', 'ocs', 'p'] as $attr) {
           if (!isset($m[$attr]))
             $m[$attr] = null;
