@@ -29,7 +29,7 @@ class RecordNotFound extends Error {}
 
 class AuthRocket {
 
-  const VERSION = '1.1.0';
+  const VERSION = '1.2.0';
 
 
   private $api;
@@ -72,6 +72,7 @@ class AuthRocket {
     $this->config['verifySsl'] = !isset($params['verifySsl']) || $params['verifySsl'];
 
     $this->authProviders();
+    $this->credentials();
     $this->memberships();
     $this->orgs();
     $this->realms();
@@ -177,6 +178,12 @@ class AuthRocket {
     if (!isset($this->authProviders))
       $this->authProviders = new AuthProvider($this);
     return $this->authProviders;
+  }
+
+  public function credentials() {
+    if (!isset($this->credentials))
+      $this->credentials = new Credential($this);
+    return $this->credentials;
   }
 
   public function memberships() {

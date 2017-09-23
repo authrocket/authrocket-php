@@ -1,3 +1,8 @@
+#### 1.2.0
+
+- add Credential
+- Add User\authenticateCode()
+
 #### 1.1.0
 
 - Fix error on PHP 7

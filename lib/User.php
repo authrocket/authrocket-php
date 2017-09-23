@@ -38,6 +38,18 @@ class User extends Resource {
     return $this->client->post($path, $params);
   }
 
+  // $params = [
+  //   'token' => 'kli_abcdefg',
+  //   'code' => '123456'
+  // ]
+  public function authenticateCode($id, $params) {
+    if (!is_string($id))
+      throw new Error('$id must be a string');
+    $path = $this->path . '/' . urlencode($id) . '/authenticate_code';
+    $params = $this->buildRoot($this->rootElement, $params);
+    return $this->client->post($path, $params);
+  }
+
   public function authenticateKey($apiKey, $params=null) {
     if (!is_string($apiKey))
       throw new Error('$apiKey must be a string');

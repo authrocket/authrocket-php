@@ -65,6 +65,15 @@ class TestCase extends \PHPUnit_Framework_TestCase {
     $this->assertEquals('auth_provider', $this->authProvider->object);
   }
 
+  protected function createTotpAuthProvider() {
+    $this->authProvider =
+      $this->client->authProviders->create([
+        'provider_type' => 'totp'
+      ]);
+    $this->assertNoError($this->authProvider);
+    $this->assertEquals('auth_provider', $this->authProvider->object);
+  }
+
 
   protected function createMembership() {
     if (!isset($this->user))
