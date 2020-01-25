@@ -8,7 +8,7 @@ class CredentialTest extends TestCase {
     parent::setUp();
     $this->createUser();
     $this->credential = $this->user->credentials[0];
-    $this->createTotpAuthProvider();
+    $this->activateTotpAuthProvider();
   }
 
 

@@ -54,9 +54,11 @@ class RealmTest extends TestCase {
    * @expectedException AuthRocket\RecordNotFound
    */
   function testDelete() {
-    $res = $this->client->realms->delete($this->realm->id);
+    $id = $this->realm->id;
+    $res = $this->client->realms->delete($id);
     $this->assertNoError($res);
-    $res = $this->client->realms->find($this->realm->id, ['state'=>'active']);
+    $this->realm = null;
+    $res = $this->client->realms->find($id, ['state'=>'active']);
   }
 
   function testReset() {

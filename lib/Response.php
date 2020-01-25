@@ -17,9 +17,7 @@ class Response {
     $body     = self::decodeBody($res);
 
     if (isset($body['errors'])) {
-      foreach ($body['errors'] as $attr => $msgs) {
-        $errors += $msgs;
-      }
+      $errors += $body['errors'];
       unset($body['errors']);
       $metadata = $body;
     } elseif (isset($body['collection'])) {
@@ -40,6 +38,9 @@ class Response {
   static function decodeBody($res) {
     $body = (string) $res->getBody();
 
+    if ($body == '') {
+      return null;
+    }
     if ($res->hasHeader('Content-Type') && preg_match('/^application\/json/', $res->getHeader('Content-Type')[0])) {
       $body = json_decode($body, true);
 

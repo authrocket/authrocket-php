@@ -24,7 +24,11 @@ class MembershipTest extends TestCase {
   }
 
   function testCreate() {
-    $res = $this->client->memberships->create(['user_id'=>$this->user->id]);
+    $this->testDelete();
+    $res = $this->client->memberships->create([
+        'org_id' => $this->org->id,
+        'user_id' => $this->user->id
+      ]);
     $this->assertNoError($res);
     $this->assertEquals('membership', $res->object);
     $this->assertRegExp('/^mb_/', $res->id);

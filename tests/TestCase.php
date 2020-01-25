@@ -65,13 +65,29 @@ class TestCase extends \PHPUnit\Framework\TestCase {
     $this->assertEquals('auth_provider', $this->authProvider->object);
   }
 
-  protected function createTotpAuthProvider() {
+  protected function activateTotpAuthProvider() {
     $this->authProvider =
-      $this->client->authProviders->create([
-        'provider_type' => 'totp'
+      $this->client->authProviders->find('totp', [
+        'realm_id' => $this->realm->id
       ]);
+    $this->authProvider =
+      $this->client->authProviders->update($this->authProvider->id, [
+        'state' => 'active'
+       ]);
     $this->assertNoError($this->authProvider);
     $this->assertEquals('auth_provider', $this->authProvider->object);
+  }
+
+
+  protected function createInvitation() {
+    $em = 'invitee-'.rand(1,99999).'@example.com';
+    $this->invitation =
+      $this->client->invitations->create([
+        'email'           => $em,
+        'invitation_type' => 'request'
+      ]);
+    $this->assertNoError($this->invitation);
+    $this->assertEquals('invitation', $this->invitation->object);
   }
 
 
@@ -138,8 +154,6 @@ class TestCase extends \PHPUnit\Framework\TestCase {
     $em = 'user-'.rand(1,99999).'@example.com';
     $this->user =
       $this->client->users->create([
-        'user_type'  => 'human',
-        'username'   => $em,
         'email'      => $em,
         'password'   => 'quick-fox-jumped-over-the-moon',
         'first_name' => 'george'

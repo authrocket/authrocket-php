@@ -1,3 +1,12 @@
+#### 2.0.0
+
+NOTE: This version is only compatible with AuthRocket 2. Use package version 1.x with AuthRocket 1.
+
+- Update for AuthRocket 2 API
+- Rename ENV AUTHROCKET_JWT_SECRET -> AUTHROCKET_JWT_KEY and jwtSecret -> jwtKey
+- Add Invitation
+- Update Session, User
+
 #### 1.2.0
 
 - add Credential

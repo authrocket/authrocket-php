@@ -19,13 +19,16 @@ class UserTest extends TestCase {
   }
 
   function testFind() {
-    $res = $this->client->users->find($this->user->username);
+    $res = $this->client->users->find($this->user->email);
     $this->assertNoError($res);
     $this->assertEquals('user', $res->object);
   }
 
   function testCreate() {
-    $res = $this->client->users->create(['user_type'=>'api']);
+    $res = $this->client->users->create([
+      'email' => 'alexander@example.com',
+      'password' => 'how-now-brown-cow!'
+    ]);
     $this->assertNoError($res);
     $this->assertEquals('user', $res->object);
     $this->assertRegExp('/^usr_/', $res->id);
@@ -54,6 +57,13 @@ class UserTest extends TestCase {
     $this->assertNoError($res);
   }
 
+  function testUpdateProfile() {
+    $res = $this->client->users->updateProfile($this->user->id, [
+      'email' => 'george2@example.com'
+    ]);
+    $this->assertNoError($res);
+  }
+
   function testDelete() {
     $res = $this->client->users->delete($this->user->id);
     $this->assertNoError($res);
@@ -63,40 +73,31 @@ class UserTest extends TestCase {
   }
 
   function testAuthenticate() {
-    try {
-      $res = $this->client->users->authenticate($this->user->id, 'wrong');
-      $this->assertFalse(true, "authenticate() should have thrown an exception");
-    } catch (AuthenticationFailed $e) {
-      // handled properly
-    }
+    $res = $this->client->users->authenticate($this->user->id, [
+      'password' => 'wrong'
+    ]);
+    $this->assertMatchesError('/Password is invalid/', $res);
 
-    $res = $this->client->users->authenticate($this->user->id, 'quick-fox-jumped-over-the-moon');
+    $res = $this->client->users->authenticate($this->user->email,[
+      'password' => 'quick-fox-jumped-over-the-moon'
+    ]);
     $this->assertNoError($res);
-    $this->assertEquals('user', $res->object);
+    $this->assertEquals('session', $res->object);
     $this->assertTrue(is_string($res->token));
-  }
-
-  function testAuthenticateKey() {
-    $res = $this->client->users->create(['user_type'=>'api']);
-    $this->assertNoError($res);
-
-    $res = $this->client->users->authenticateKey($res->api_key);
-    $this->assertNoError($res);
-    $this->assertEquals('user', $res->object);
   }
 
   function testRequestEmailVerification() {
     $res = $this->client->users->requestEmailVerification($this->user->id);
     $this->assertNoError($res);
-    $this->assertEquals('user', $res->object);
-    $this->assertTrue(is_string($res->token));
+    $this->assertEquals('token', $res->object);
+    $this->assertRegExp('/^tve:/', $res->token);
   }
 
   function testVerifyEmail() {
     $res = $this->client->users->requestEmailVerification($this->user->id);
     $this->assertNoError($res);
 
-    $res = $this->client->users->verifyEmail($this->user->id, $res->token);
+    $res = $this->client->users->verifyEmail(['token'=>$res->token]);
     $this->assertNoError($res);
     $this->assertEquals('user', $res->object);
   }
@@ -104,22 +105,36 @@ class UserTest extends TestCase {
   function testGeneratePasswordToken() {
     $res = $this->client->users->generatePasswordToken($this->user->id);
     $this->assertNoError($res);
-    $this->assertEquals('user', $res->object);
-    $this->assertTrue(is_string($res->password_reset_token));
+    $this->assertEquals('token', $res->object);
+    $this->assertRegExp('/^tpw:/', $res->token);
   }
 
   function testResetPasswordWithToken() {
     $res = $this->client->users->generatePasswordToken($this->user->id);
     $this->assertNoError($res);
-    $this->assertRegExp('/^kpw_/', $res->password_reset_token);
 
-    $res = $this->client->users->resetPasswordWithToken($this->user->id, [
-      'token'                 => $res->password_reset_token,
+    $res = $this->client->users->resetPasswordWithToken([
+      'token'                 => $res->token,
       'password'              => 'how-now-brown-cow!',
       'password_confirmation' => 'how-now-brown-cow!'
     ]);
     $this->assertNoError($res);
-    $this->assertEquals('user', $res->object);
+    $this->assertEquals('session', $res->object);
+  }
+
+  function testAcceptInvitation() {
+    $this->createOrg();
+    $invite = $this->client->invitations->create([
+      'email'           => 'freddy@example.com',
+      'invitation_type' => 'org',
+      'org_id'          => $this->org->id
+    ]);
+    $this->assertNoError($invite);
+
+    $res = $this->client->users->acceptInvitation($this->user->id, [
+      'token' => $invite->token
+    ]);
+    $this->assertNoError($res);
   }
 
 }

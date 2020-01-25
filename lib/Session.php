@@ -29,56 +29,58 @@ class Session extends Resource {
     }
     $jwt = (array) $jwt;
 
-    foreach (['aud', 'cs', 'fn', 'ln', 'm'] as $attr) {
+    foreach (['cs', 'email_verified', 'given_name', 'family_name', 'orgs', 'preferred_username', 'ref'] as $attr) {
       if (!isset($jwt[$attr]))
         $jwt[$attr] = null;
     }
 
     $user = [
-      'object'     => 'user',
-      'id'         => $jwt['uid'],
-      'realm_id'   => $jwt['aud'],
-      'username'   => $jwt['un'],
-      'first_name' => $jwt['fn'],
-      'last_name'  => $jwt['ln'],
-      'name'       => $jwt['n'],
-      'custom'     => $jwt['cs']
+      'object'             => 'user',
+      'id'                 => $jwt['sub'],
+      'realm_id'           => $jwt['rid'],
+      'username'           => $jwt['preferred_username'],
+      'first_name'         => $jwt['given_name'],
+      'last_name'          => $jwt['family_name'],
+      'name'               => $jwt['name'],
+      'email'              => $jwt['email'],
+      'email_verification' => $jwt['email_verified'] ? 'verified' : 'none',
+      'reference'          => $jwt['ref'],
+      'custom'             => $jwt['cs']
     ];
-    if ($jwt['m']) {
+    if ($jwt['orgs']) {
       $mbs = $user['memberships'] = [];
-      foreach ($jwt['m'] as $m) {
+      foreach ($jwt['orgs'] as $m) {
         $m = (array)$m;
-        foreach (['cs', 'o', 'oid', 'ocs', 'p'] as $attr) {
+        foreach (['cs', 'name', 'perm', 'ref'] as $attr) {
           if (!isset($m[$attr]))
             $m[$attr] = null;
         }
         $m2 = [
           'object'      => 'membership',
-          'permissions' => $m['p'],
-          'user_id'     => $jwt['uid'],
+          'id'          => $m['mid'],
+          'permissions' => $m['perm'],
+          'user_id'     => $jwt['sub'],
           'org_id'      => $m['oid'],
-          'custom'      => $m['cs']
+          'org' => [
+            'object'    => 'org',
+            'id'        => $m['oid'],
+            'realm_id'  => $jwt['rid'],
+            'name'      => $m['name'],
+            'reference' => $m['ref'],
+            'custom'    => $m['cs']
+          ]
         ];
-        if ($m['o']) {
-          $m2['org'] = [
-            'object'   => 'org',
-            'id'       => $m['oid'],
-            'realm_id' => $jwt['aud'],
-            'name'     => $m['o'],
-            'custom'   => $m['ocs']
-          ];
-        }
         array_push($mbs, $m2);
       }
       $user['memberships'] = $mbs;
     }
     $session = [
       'object'     => 'session',
-      'id'         => $jwt['tk'],
+      'id'         => $jwt['sid'],
       'created_at' => $jwt['iat'],
       'expires_at' => $jwt['exp'],
       'token'      => $token,
-      'user_id'    => $jwt['uid'],
+      'user_id'    => $jwt['sub'],
       'user'       => $user
     ];
     

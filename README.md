@@ -2,7 +2,7 @@
 
 [AuthRocket](https://authrocket.com/) provides Auth as a Service, making it quick and easy to add signups, logins, social auth, a full user management UI, and much more to your app.
 
-The `authrocket` PHP library covers all of our Core API. It also covers select portions of the Extended API.
+The `authrocket` PHP library covers all of our Core API. It also covers select portions of the Configuration API.
 
 
 ## Installation
@@ -17,7 +17,7 @@ composer require authrocket/authrocket
 php composer.phar require authrocket/authrocket
 ```
 
-Or, add `"authrocket/authrocket": "<2"` to the `require` section of your composer.json and run `composer install`.
+Or, add `"authrocket/authrocket": "^2"` to the `require` section of your composer.json and run `composer install`.
 
 You can also download `authrocket.phar`, a .zip, or a .tar.gz of the latest release directly from GitHub: https://github.com/authrocket/authrocket-php/releases/latest
 

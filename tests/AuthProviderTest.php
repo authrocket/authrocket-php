@@ -15,7 +15,7 @@ class AuthProviderTest extends TestCase {
   function testAll() {
     $res = $this->client->authProviders->all();
     $this->assertNoError($res);
-    $this->assertEquals(1, count($res->results));
+    $this->assertEquals(2, count($res->results));
     $this->assertEquals('auth_provider', $res->results[0]['object']);
   }
 
@@ -44,6 +44,7 @@ class AuthProviderTest extends TestCase {
   }
 
   function testDelete() {
+    $this->createAuthProvider();
     $res = $this->client->authProviders->all();
     $this->assertNoError($res);
     $count = count($res->results);
@@ -83,7 +84,7 @@ class AuthProviderTest extends TestCase {
       'redirect_uri' => 'https://local.dev/'
     ]);
 
-    $query = parse_url($res->url, PHP_URL_QUERY);
+    $query = parse_url($res->auth_url, PHP_URL_QUERY);
     $pairs = preg_split('/&/', $query);
     $pairSet = [];
     foreach($pairs as $pair) {
@@ -104,7 +105,7 @@ class AuthProviderTest extends TestCase {
       'state' => $pairSet['state']
     ]);
     $this->assertNoError($res);
-    $this->assertEquals('user', $res->object);
+    $this->assertEquals('session', $res->object);
   }
 
   function testAuthorizeToken() {
@@ -115,7 +116,7 @@ class AuthProviderTest extends TestCase {
       'access_token' => 'abcdefgh'
     ]);
     $this->assertNoError($res);
-    $this->assertEquals('user', $res->object);
+    $this->assertEquals('session', $res->object);
   }
 
 }

@@ -29,7 +29,7 @@ class RecordNotFound extends Error {}
 
 class AuthRocket {
 
-  const VERSION = '1.2.0';
+  const VERSION = '2.0.0';
 
 
   private $api;
@@ -73,6 +73,7 @@ class AuthRocket {
 
     $this->authProviders();
     $this->credentials();
+    $this->invitations();
     $this->memberships();
     $this->orgs();
     $this->realms();
@@ -162,10 +163,10 @@ class AuthRocket {
         break;
       default:
         if ($code >= 400 && $code <= 499) {
-          throw new Error("Client error: $code -- ".$res->body->error);
+          throw new Error("Client error: $code -- ".(string)$res->getBody());
         }
         if ($code >= 500 && $code <= 599) {
-          throw new Error("Server error: $code -- ".$res->body->error);
+          throw new Error("Server error: $code -- ".(string)$res->getBody());
         }
     }
   }
@@ -184,6 +185,12 @@ class AuthRocket {
     if (!isset($this->credentials))
       $this->credentials = new Credential($this);
     return $this->credentials;
+  }
+
+  public function invitations() {
+    if (!isset($this->invitations))
+      $this->invitations = new Invitation($this);
+    return $this->invitations;
   }
 
   public function memberships() {

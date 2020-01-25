@@ -2,7 +2,7 @@
 
 namespace AuthRocket;
 
-// in nearly all cases, a Username can be used in place of $id
+// in nearly all cases, an Email can be used in place of $id
 
 class User extends Resource {
 
@@ -21,42 +21,55 @@ class User extends Resource {
   public function updatePassword($id, $params) {
     if (!is_string($id))
       throw new Error('$id must be a string');
+    if (!is_array($params))
+      throw new Error('$params must be an array');
     $path = $this->path . '/' . urlencode($id) . '/update_password';
     $params = $this->buildRoot($this->rootElement, $params);
     return $this->client->put($path, $params);
   }
 
-  public function authenticate($id, $password, $params=null) {
+  // $params = [
+  //   'email' => '...',
+  //   'first_name' => '...',
+  //   'last_name' => '...',
+  //   'password' => 'new',
+  //   'password_confirmation' => 'new',
+  //   'username' => '...'
+  // ]
+  public function updateProfile($id, $params) {
     if (!is_string($id))
       throw new Error('$id must be a string');
-    if (!is_string($password))
-      throw new Error('$password must be a string');
-    $path = $this->path . '/' . urlencode($id) . '/authenticate';
     if (!is_array($params))
-      $params = [];
-    $params['password'] = $password;
-    return $this->client->post($path, $params);
+      throw new Error('$params must be an array');
+    $path = $this->path . '/' . urlencode($id) . '/profile';
+    $params = $this->buildRoot($this->rootElement, $params);
+    return $this->client->put($path, $params);
   }
 
   // $params = [
-  //   'token' => 'kli_abcdefg',
-  //   'code' => '123456'
+  //   'password' => 'secret'
   // ]
-  public function authenticateCode($id, $params) {
+  public function authenticate($id, $params) {
     if (!is_string($id))
       throw new Error('$id must be a string');
-    $path = $this->path . '/' . urlencode($id) . '/authenticate_code';
+    if (!is_array($params))
+      throw new Error('$params must be an array');
+    $path = $this->path . '/' . urlencode($id) . '/authenticate';
     $params = $this->buildRoot($this->rootElement, $params);
     return $this->client->post($path, $params);
   }
 
-  public function authenticateKey($apiKey, $params=null) {
-    if (!is_string($apiKey))
-      throw new Error('$apiKey must be a string');
-    $path = $this->path . '/authenticate_key';
+  // $params = [
+  //   'token' => 'kli:abcdefg',
+  //   'code' => '123456'
+  // ]
+  public function authenticateToken($id, $params) {
+    if (!is_string($id))
+      throw new Error('$id must be a string');
     if (!is_array($params))
-      $params = [];
-    $params['api_key'] = $apiKey;
+      throw new Error('$params must be an array');
+    $path = $this->path . '/' . urlencode($id) . '/authenticate_token';
+    $params = $this->buildRoot($this->rootElement, $params);
     return $this->client->post($path, $params);
   }
 
@@ -67,14 +80,14 @@ class User extends Resource {
     return $this->client->post($path, $params);
   }
 
-  public function verifyEmail($id, $token, $params=null) {
-    if (!is_string($id))
-      throw new Error('$id must be a string');
-    if (!is_string($token))
-      throw new Error('$token must be a string');
-    $path = $this->path . '/' . urlencode($id) . '/verify_email';
+  // $params = [
+  //   'token' => 'abcdefghijkl'
+  // ]
+  public function verifyEmail($params) {
+    if (!is_array($params))
+      throw new Error('$params must be an array');
+    $path = $this->path . '/verify_email';
     $params = $this->buildRoot($this->rootElement, $params);
-    $params['user']['token'] = $token;
     return $this->client->post($path, $params);
   }
 
@@ -90,10 +103,23 @@ class User extends Resource {
   //   'password' => 'new',
   //   'password_confirmation' => 'new'
   // ]
-  public function resetPasswordWithToken($id, $params) {
+  public function resetPasswordWithToken($params) {
+    if (!is_array($params))
+      throw new Error('$params must be an array');
+    $path = $this->path . '/reset_password_with_token';
+    $params = $this->buildRoot($this->rootElement, $params);
+    return $this->client->post($path, $params);
+  }
+
+  // $params = [
+  //   'token' => 'abcdefghijkl',
+  // ]
+  public function acceptInvitation($id, $params) {
     if (!is_string($id))
       throw new Error('$id must be a string');
-    $path = $this->path . '/' . urlencode($id) . '/reset_password_with_token';
+    if (!is_array($params))
+      throw new Error('$params must be an array');
+    $path = $this->path . '/' . urlencode($id) . '/accept_invitation';
     $params = $this->buildRoot($this->rootElement, $params);
     return $this->client->post($path, $params);
   }
