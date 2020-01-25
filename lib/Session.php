@@ -11,19 +11,19 @@ class Session extends Resource {
   }
 
   function fromToken($token, $params=[]) {
-    $jwtSecret = isset($params['jwtSecret']) ? $params['jwtSecret'] : $this->client->getDefaultJwtSecret();
-    if (!is_string($jwtSecret)) {
-      throw new Error('Missing jwtSecret - must be provided via $params or new AuthRocket(...)');
+    $jwtKey = isset($params['jwtKey']) ? $params['jwtKey'] : $this->client->getDefaultJwtKey();
+    if (!is_string($jwtKey)) {
+      throw new Error('Missing jwtKey - must be provided via $params or new AuthRocket(...)');
     }
 
-    if (strlen($jwtSecret) > 256)
+    if (strlen($jwtKey) > 256)
       $algo = ['RS256'];
     else
       $algo = ['HS256'];
 
     \Firebase\JWT\JWT::$leeway = 10;
     try {
-      $jwt = \Firebase\JWT\JWT::decode($token, $jwtSecret, $algo);
+      $jwt = \Firebase\JWT\JWT::decode($token, $jwtKey, $algo);
     } catch (\UnexpectedValueException $e) {
       return null;
     }

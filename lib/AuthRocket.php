@@ -6,10 +6,10 @@ namespace AuthRocket;
   usage:
 
   $client = new \AuthRocket\AuthRocket([
-    'url'       => 'https://api-e1.authrocket.com/v1',
-    'apiKey'    => 'ko_SAMPLE',
-    'realm'     => 'rl_SAMPLE',
-    'jwtSecret' => 'jsk_SAMPLE'
+    'url'    => 'https://api-e2.authrocket.com/v2',
+    'apiKey' => 'ko_SAMPLE',
+    'realm'  => 'rl_SAMPLE',
+    'jwtKey' => 'jsk_SAMPLE'
   ]);
 
   $client->orgs()->all();
@@ -38,11 +38,11 @@ class AuthRocket {
 
   static function autoConfigure($params=[]) {
     $config = [
-      'url'       => getenv('AUTHROCKET_URL'),
-      'apiKey'    => getenv('AUTHROCKET_API_KEY'),
-      'account'   => getenv('AUTHROCKET_ACCOUNT'),
-      'realm'     => getenv('AUTHROCKET_REALM'),
-      'jwtSecret' => getenv('AUTHROCKET_JWT_SECRET')
+      'url'     => getenv('AUTHROCKET_URL'),
+      'apiKey'  => getenv('AUTHROCKET_API_KEY'),
+      'realm'   => getenv('AUTHROCKET_REALM'),
+      'service' => getenv('AUTHROCKET_SERVICE'),
+      'jwtKey'  => getenv('AUTHROCKET_JWT_KEY')
     ];
     $config = array_merge($config, $params);
     foreach ($config as $key => $val) {
@@ -53,18 +53,18 @@ class AuthRocket {
   }
 
   function __construct(array $params) {
-    $this->setDefaultJwtSecret(isset($params['jwtSecret']) ? $params['jwtSecret'] : null);
+    $this->setDefaultJwtKey(isset($params['jwtKey']) ? $params['jwtKey'] : null);
 
     $this->config['headers'] = [
       'Accept-Encoding' => 'gzip',
       'Content-Type' => 'application/json',
       'User-Agent' => "AuthRocket/php v".AuthRocket::VERSION,
-      'X-Authrocket-Api-Key' => $params['apiKey']
+      'Authrocket-Api-Key' => $params['apiKey']
     ];
-    if (isset($params['account']))
-      $this->config['headers']['X-Authrocket-Account'] = $params['account'];
+    if (isset($params['service']))
+      $this->config['headers']['Authrocket-Service'] = $params['service'];
     if (isset($params['realm']))
-      $this->config['headers']['X-Authrocket-Realm'] = $params['realm'];
+      $this->config['headers']['Authrocket-Realm'] = $params['realm'];
 
     $this->config['url'] = $params['url'];
     if ($this->config['url'][strlen($this->config['url'])-1] != '/')
@@ -80,17 +80,17 @@ class AuthRocket {
     $this->users();
   }
 
-  public function getDefaultJwtSecret() {
-    return isset($this->config['jwtSecret']) ? $this->config['jwtSecret'] : null;
+  public function getDefaultJwtKey() {
+    return isset($this->config['jwtKey']) ? $this->config['jwtKey'] : null;
   }
 
-  public function setDefaultJwtSecret($jwtSecret) {
-    $this->config['jwtSecret'] = $jwtSecret;
+  public function setDefaultJwtKey($jwtKey) {
+    $this->config['jwtKey'] = $jwtKey;
   }
 
   public function setDefaultRealm($realmId) {
     $this->api = null;
-    $this->config['headers']['X-Authrocket-Realm'] = $realmId;
+    $this->config['headers']['Authrocket-Realm'] = $realmId;
   }
 
   protected function getApi() {
@@ -145,7 +145,7 @@ class AuthRocket {
         throw new AuthenticationFailed("Authentication failed (API key is valid; this auth-related API call failed)");
         break;
       case 402:
-        throw new Error("Account inactive; login to portal to check account status");
+        throw new Error("Account inactive; login to portal to check service status");
         break;
       case 403:
         throw new Error("Access denied; check your API credentials and permissions");

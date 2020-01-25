@@ -35,20 +35,20 @@ $client = \AuthRocket\AuthRocket::autoConfigure();
 Ensure these environment variables are set:
 
 ```bash
-AUTHROCKET_API_KEY    = ko_SAMPLE
-AUTHROCKET_URL        = https://api-e1.authrocket.com/v1
-AUTHROCKET_REALM      = rl_SAMPLE   # optional
-AUTHROCKET_JWT_SECRET = jsk_SAMPLE  # optional
+AUTHROCKET_API_KEY = ko_SAMPLE
+AUTHROCKET_URL     = https://api-e2.authrocket.com/v2
+AUTHROCKET_REALM   = rl_SAMPLE   # optional
+AUTHROCKET_JWT_KEY = jsk_SAMPLE  # optional
 ```
 
-`AUTHROCKET_URL` must be updated based on what cluster your account is provisioned on.
+`AUTHROCKET_URL` may vary based on what cluster your account is provisioned on.
 
-`AUTHROCKET_REALM` and `AUTHROCKET_JWT_SECRET` are optional. If you are using multiple realms, we recommend building a new client for each realm, just setting `realm` and `jwtSecret`:
+`AUTHROCKET_REALM` and `AUTHROCKET_JWT_KEY` are optional. If you are using multiple realms, we recommend building a new client for each realm, directly setting `realm` and `jwtKey`:
 
 ```php
 $client = \AuthRocket\AuthRocket::autoConfigure([
-  'realm'     => 'rl_SAMPLE',
-  'jwtSecret' => 'jsk_SAMPLE'
+  'realm'  => 'rl_SAMPLE',
+  'jwtKey' => 'jsk_SAMPLE'
 ]);
 ```
 
@@ -59,10 +59,10 @@ It's also possible to configure the AuthRocket client instance directly:
 
 ```php
 $client = new \AuthRocket\AuthRocket([
-  'apiKey'    => 'ko_SAMPLE',
-  'url'       => 'https://api-e1.authrocket.com/v1',
-  'realm'     => 'rl_SAMPLE',
-  'jwtSecret' => 'jsk_SAMPLE'
+  'apiKey' => 'ko_SAMPLE',
+  'url'    => 'https://api-e2.authrocket.com/v2',
+  'realm'  => 'rl_SAMPLE',
+  'jwtKey' => 'jsk_SAMPLE'
 ]);
 ```
 
