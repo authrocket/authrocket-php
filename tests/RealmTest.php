@@ -37,17 +37,18 @@ class RealmTest extends TestCase {
   }
 
   function testCreate() {
-    $res = $this->client->realms->create(['name'=>'hello '.rand()]);
+    $res = $this->client->realms->create(['name'=>'AR-php hello '.rand()]);
     $this->assertNoError($res);
     $this->assertEquals('realm', $res->object);
     $this->assertRegExp('/^rl_/', $res->id);
   }
 
   function testUpdate() {
-    $this->assertFalse('new name' == $this->realm->name);
-    $res = $this->client->realms->update($this->realm->id, ['name'=>'new name']);
+    $newName = 'AR-php new name '.rand();
+    $this->assertFalse($newName == $this->realm->name);
+    $res = $this->client->realms->update($this->realm->id, ['name'=>$newName]);
     $this->assertNoError($res);
-    $this->assertEquals('new name', $res->name);
+    $this->assertEquals($newName, $res->name);
   }
 
   /**

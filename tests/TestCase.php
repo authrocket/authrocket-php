@@ -11,6 +11,10 @@ class TestCase extends \PHPUnit\Framework\TestCase {
     self::buildClient();
   }
 
+  static function tearDownAfterClass() {
+    self::deleteStaleRealms();
+  }
+
   function setUp() {
     $this->client = self::$ar_client;
     $this->createRealm();
@@ -134,6 +138,16 @@ class TestCase extends \PHPUnit\Framework\TestCase {
     if (isset($this->realm)) {
       $res = $this->client->realms->delete($this->realm->id);
       $this->assertNoError($res);
+    }
+  }
+
+  protected static function deleteStaleRealms() {
+    $client = self::$ar_client;
+    $res = $client->realms->all();
+    foreach($res->results as $r) {
+      if (preg_match('/^AR-php /', $r['name'])) {
+        $client->realms->delete($r['id']);
+      }
     }
   }
 
