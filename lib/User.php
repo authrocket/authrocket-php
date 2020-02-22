@@ -63,12 +63,10 @@ class User extends Resource {
   //   'token' => 'kli:abcdefg',
   //   'code' => '123456'
   // ]
-  public function authenticateToken($id, $params) {
-    if (!is_string($id))
-      throw new Error('$id must be a string');
+  public function authenticateToken($params) {
     if (!is_array($params))
       throw new Error('$params must be an array');
-    $path = $this->path . '/' . urlencode($id) . '/authenticate_token';
+    $path = $this->path . '/authenticate_token';
     $params = $this->buildRoot($this->rootElement, $params);
     return $this->client->post($path, $params);
   }

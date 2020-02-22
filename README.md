@@ -35,10 +35,10 @@ $client = \AuthRocket\AuthRocket::autoConfigure();
 Ensure these environment variables are set:
 
 ```bash
-AUTHROCKET_API_KEY = ko_SAMPLE
+AUTHROCKET_API_KEY = ks_SAMPLE
 AUTHROCKET_URL     = https://api-e2.authrocket.com/v2
 AUTHROCKET_REALM   = rl_SAMPLE   # optional
-AUTHROCKET_JWT_KEY = jsk_SAMPLE  # optional
+AUTHROCKET_JWT_KEY = SAMPLE      # optional
 ```
 
 `AUTHROCKET_URL` may vary based on what cluster your account is provisioned on.
@@ -48,7 +48,7 @@ AUTHROCKET_JWT_KEY = jsk_SAMPLE  # optional
 ```php
 $client = \AuthRocket\AuthRocket::autoConfigure([
   'realm'  => 'rl_SAMPLE',
-  'jwtKey' => 'jsk_SAMPLE'
+  'jwtKey' => 'SAMPLE'
 ]);
 ```
 
@@ -59,10 +59,10 @@ It's also possible to configure the AuthRocket client instance directly:
 
 ```php
 $client = new \AuthRocket\AuthRocket([
-  'apiKey' => 'ko_SAMPLE',
+  'apiKey' => 'ks_SAMPLE',
   'url'    => 'https://api-e2.authrocket.com/v2',
   'realm'  => 'rl_SAMPLE',
-  'jwtKey' => 'jsk_SAMPLE'
+  'jwtKey' => 'SAMPLE'
 ]);
 ```
 

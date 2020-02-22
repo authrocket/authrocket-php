@@ -10,6 +10,19 @@ class InvitationTest extends TestCase {
   }
 
 
+  function testAll() {
+    $res = $this->client->invitations->all();
+    $this->assertNoError($res);
+    $this->assertEquals(1, count($res->results));
+    $this->assertEquals('invitation', $res->results[0]['object']);
+  }
+
+  function testFirst() {
+    $res = $this->client->invitations->first();
+    $this->assertNoError($res);
+    $this->assertEquals('invitation', $res->object);
+  }
+
   function testFind() {
     $res = $this->client->invitations->find($this->invitation->id);
     $this->assertNoError($res);

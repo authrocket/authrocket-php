@@ -7,12 +7,13 @@ namespace AuthRocket;
 
   $client = new \AuthRocket\AuthRocket([
     'url'    => 'https://api-e2.authrocket.com/v2',
-    'apiKey' => 'ko_SAMPLE',
+    'apiKey' => 'ks_SAMPLE',
     'realm'  => 'rl_SAMPLE',
-    'jwtKey' => 'jsk_SAMPLE'
+    'jwtKey' => 'SAMPLE'
   ]);
 
   $client->orgs()->all();
+  $client->orgs()->first();
   $client->orgs()->find('org_SAMPLE');
   $client->orgs()->create([...]);
   $client->orgs()->update('org_SAMPLE', [...]);

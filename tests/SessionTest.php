@@ -28,34 +28,52 @@ class SessionTest extends TestCase {
     $this->assertEquals('session', $res->object);
   }
 
+  /**
+   * @expectedException AuthRocket\Error
+   */
+  function testFromTokenMissingKey() {
+    $this->client->setDefaultJwtKey(null);
+    $this->client->sessions->fromToken($this->session->token, ['jwtKey'=>$this->realm->jwt_key]);
+  }
+
   function testFromTokenHs256() {
-    $this->realm = $this->client->realms->update($this->realm->id, ['jwt_algo'=>'hs256']);
+    $this->realm = $this->client->realms->update($this->realm->id, [
+      'jwt_algo'=>'hs256',
+      'jwt_scopes'=>'ar.orgs'
+    ]);
     $this->assertNoError($this->realm);
     $this->createSession();
 
-    $this->assertTrue(is_string($this->realm->jwt_key));
-    $res = $this->client->sessions->fromToken('blahblah', ['jwtKey'=>$this->realm->jwt_key]);
+    $this->client->setDefaultJwtKey('wrong-key');
+    $res = $this->client->sessions->fromToken($this->session->token);
     $this->assertNull($res);
 
-    $res = $this->client->sessions->fromToken($this->session->token, ['jwtKey'=>$this->realm->jwt_key]);
+    $this->assertRegExp('/^jsk_/', $this->realm->jwt_key);
+    $this->client->setDefaultJwtKey($this->realm->jwt_key);
+    $res = $this->client->sessions->fromToken('blahblah');
+    $this->assertNull($res);
+
+    $res = $this->client->sessions->fromToken($this->session->token);
     $this->assertInstanceOf('\AuthRocket\Response', $res);
     $this->assertEquals('session', $res->object);
     $this->assertEquals('user', $res->user['object']);
+    $this->assertEquals('membership', $res->user['memberships'][0]['object']);
+    $this->assertEquals('org', $res->user['memberships'][0]['org']['object']);
   }
 
   function testFromTokenRs256() {
     $this->assertRegExp('/PUBLIC KEY/', $this->realm->jwt_key);
-    $res = $this->client->sessions->fromToken('blahblah', ['jwtKey'=>$this->realm->jwt_key]);
+    $this->client->setDefaultJwtKey($this->realm->jwt_key);
+    $res = $this->client->sessions->fromToken('blahblah');
     $this->assertNull($res);
 
-    $res = $this->client->sessions->fromToken($this->session->token, ['jwtKey'=>$this->realm->jwt_key]);
+    $res = $this->client->sessions->fromToken($this->session->token);
     $this->assertInstanceOf('\AuthRocket\Response', $res);
     $this->assertEquals('session', $res->object);
     $this->assertEquals('user', $res->user['object']);
-  }
 
-  function testFromTokenDefaultJwt() {
-    $this->client->setDefaultJwtKey($this->realm->jwt_key);
+    $shortKey = preg_replace(['/-{5}(BEGIN|END) PUBLIC KEY-{5}/', '/\n/'], '', $this->realm->jwt_key);
+    $this->client->setDefaultJwtKey($shortKey);
     $res = $this->client->sessions->fromToken($this->session->token);
     $this->assertInstanceOf('\AuthRocket\Response', $res);
     $this->assertEquals('session', $res->object);

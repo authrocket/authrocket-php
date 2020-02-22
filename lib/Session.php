@@ -11,17 +11,23 @@ class Session extends Resource {
   }
 
   function fromToken($token, $params=[]) {
-    $jwtKey = isset($params['jwtKey']) ? $params['jwtKey'] : $this->client->getDefaultJwtKey();
+    $jwtKey = $this->client->getDefaultJwtKey();
     if (!is_string($jwtKey)) {
-      throw new Error('Missing jwtKey - must be provided via $params or new AuthRocket(...)');
+      throw new Error("Missing jwtKey - set AUTHROCKET_JWT_KEY or new AuthRocket(['jwtKey'=>...])");
+    }
+    $jwtKey = trim($jwtKey);
+
+    if (strlen($jwtKey) > 256) {
+      $algo = ['RS256'];
+      if (!preg_match('/^-----BEGIN /', $jwtKey)) {
+        $jwtKey = preg_replace('/[^\n]{64}/', "$0\n", $jwtKey);
+        $jwtKey = "-----BEGIN PUBLIC KEY-----\n".$jwtKey."\n-----END PUBLIC KEY-----";
+      }
+    } else {
+      $algo = ['HS256'];
     }
 
-    if (strlen($jwtKey) > 256)
-      $algo = ['RS256'];
-    else
-      $algo = ['HS256'];
-
-    \Firebase\JWT\JWT::$leeway = 10;
+    \Firebase\JWT\JWT::$leeway = 5;
     try {
       $jwt = \Firebase\JWT\JWT::decode($token, $jwtKey, $algo);
     } catch (\UnexpectedValueException $e) {
@@ -51,7 +57,7 @@ class Session extends Resource {
       $mbs = $user['memberships'] = [];
       foreach ($jwt['orgs'] as $m) {
         $m = (array)$m;
-        foreach (['cs', 'name', 'perm', 'ref'] as $attr) {
+        foreach (['cs', 'name', 'perm', 'ref', 'selected'] as $attr) {
           if (!isset($m[$attr]))
             $m[$attr] = null;
         }
@@ -59,6 +65,7 @@ class Session extends Resource {
           'object'      => 'membership',
           'id'          => $m['mid'],
           'permissions' => $m['perm'],
+          'selected'    => $m['selected'],
           'user_id'     => $jwt['sub'],
           'org_id'      => $m['oid'],
           'org' => [

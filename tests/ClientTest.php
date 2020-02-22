@@ -16,7 +16,7 @@ class ClientTest extends TestCase {
   function testJwtKey() {
     $client = new \AuthRocket\AuthRocket([
       'url'    => 'https://api-e2.authrocket.com/v2',
-      'apiKey' => 'ko_SAMPLE'
+      'apiKey' => 'ks_SAMPLE'
     ]);
     $this->assertEquals(null, $client->getDefaultJwtKey());
 
@@ -25,13 +25,7 @@ class ClientTest extends TestCase {
 
     $client = new \AuthRocket\AuthRocket([
       'url'    => 'https://api-e2.authrocket.com/v2',
-      'apiKey' => 'ko_SAMPLE'
-    ]);
-    $this->assertEquals(null, $client->getDefaultJwtKey());
-
-    $client = new \AuthRocket\AuthRocket([
-      'url'    => 'https://api-e2.authrocket.com/v2',
-      'apiKey' => 'ko_SAMPLE',
+      'apiKey' => 'ks_SAMPLE',
       'jwtKey' => 'jsk_SAMPLE'
     ]);
     $this->assertEquals('jsk_SAMPLE', $client->getDefaultJwtKey());
