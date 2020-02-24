@@ -71,10 +71,8 @@ $client = new \AuthRocket\AuthRocket([
 
 Documentation is provided on our site:
 
-* [AuthRocket Quickstart](https://authrocket.com/docs/quickstart)
-* [PHP Integration Guide](https://authrocket.com/docs/php/integration)
-* [PHP Library Usage](https://authrocket.com/docs/php/intro)
-* [API Documentation with PHP examples](https://authrocket.com/docs/api/memberships)
+* [PHP Integration Guide](https://authrocket.com/docs/integration/php)
+* [API Documentation with PHP examples](https://authrocket.com/docs/api/users)
 
 
 ## Contributing
