@@ -31,6 +31,21 @@ class ClientTest extends TestCase {
     $this->assertEquals('jsk_SAMPLE', $client->getDefaultJwtKey());
   }
 
+  /**
+   * @expectedException AuthRocket\Error
+   */
+  function testLoginrocketUrlEmpty() {
+    $client = new \AuthRocket\AuthRocket([]);
+    $client->getLoginrocketUrl();
+  }
+
+  function testLoginrocketUrl() {
+    $client = new \AuthRocket\AuthRocket([
+      'loginrocketUrl' => 'http://from.config/'
+    ]);
+    $this->assertEquals('http://from.config/', $client->getLoginrocketUrl());
+  }
+
 }
 
 ?>

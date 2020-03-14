@@ -6,7 +6,7 @@ class RealmTest extends TestCase {
 
   function setUp() {
     // parent::setUp();
-    $this->client = self::$ar_client;
+    $this->client = self::buildClient();
     $this->createRealm();
   }
 

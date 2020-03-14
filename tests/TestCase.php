@@ -8,7 +8,6 @@ class TestCase extends \PHPUnit\Framework\TestCase {
 
   static function setUpBeforeClass() {
     error_reporting(E_ALL);
-    self::buildClient();
   }
 
   static function tearDownAfterClass() {
@@ -16,7 +15,7 @@ class TestCase extends \PHPUnit\Framework\TestCase {
   }
 
   function setUp() {
-    $this->client = self::$ar_client;
+    $this->client = self::buildClient();
     $this->createRealm();
     $this->client->setDefaultRealm($this->realm->id);
   }
@@ -38,12 +37,12 @@ class TestCase extends \PHPUnit\Framework\TestCase {
 
 
 
-  protected static $ar_client;
   protected $client;
 
   protected static function buildClient() {
-    self::$ar_client = AuthRocket::autoConfigure();
-    // self::$ar_client->debug = true;
+    $cl = AuthRocket::autoConfigure();
+    // $cl->debug = true;
+    return $cl;
   }
 
 
@@ -80,6 +79,28 @@ class TestCase extends \PHPUnit\Framework\TestCase {
        ]);
     $this->assertNoError($this->authProvider);
     $this->assertEquals('auth_provider', $this->authProvider->object);
+  }
+
+
+  protected function createClientApp() {
+    $this->clientApp =
+      $this->client->clientApps->create([
+        'client_type'   => 'standard',
+        'name'          => 'ar-php-sdk',
+        'redirect_uris' => ['http://localhost:3000/']
+      ]);
+    $this->assertNoError($this->clientApp);
+    $this->assertEquals('client_app', $this->clientApp->object);
+  }
+
+
+  protected function createDomain() {
+    $this->domain =
+      $this->client->domains->create([
+        'domain_type' => 'loginrocket'
+      ]);
+    $this->assertNoError($this->domain);
+    $this->assertEquals('domain', $this->domain->object);
   }
 
 
@@ -142,7 +163,7 @@ class TestCase extends \PHPUnit\Framework\TestCase {
   }
 
   protected static function deleteStaleRealms() {
-    $client = self::$ar_client;
+    $client = self::buildClient();
     $res = $client->realms->all();
     foreach($res->results as $r) {
       if (preg_match('/^AR-php /', $r['name'])) {

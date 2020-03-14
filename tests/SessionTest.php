@@ -33,7 +33,8 @@ class SessionTest extends TestCase {
    */
   function testFromTokenMissingKey() {
     $this->client->setDefaultJwtKey(null);
-    $this->client->sessions->fromToken($this->session->token, ['jwtKey'=>$this->realm->jwt_key]);
+    $this->client->setLoginrocketUrl(null);
+    $this->client->sessions->fromToken($this->session->token);
   }
 
   function testFromTokenHs256() {
@@ -75,6 +76,23 @@ class SessionTest extends TestCase {
     $shortKey = preg_replace(['/-{5}(BEGIN|END) PUBLIC KEY-{5}/', '/\n/'], '', $this->realm->jwt_key);
     $this->client->setDefaultJwtKey($shortKey);
     $res = $this->client->sessions->fromToken($this->session->token);
+    $this->assertInstanceOf('\AuthRocket\Response', $res);
+    $this->assertEquals('session', $res->object);
+    $this->assertEquals('user', $res->user['object']);
+  }
+
+  function testFromTokenDynamic() {
+    $this->createClientApp();
+    $this->createDomain();
+    $lrUrl = new \GuzzleHttp\Psr7\Uri($this->client->getLoginrocketUrl());
+    $lrUrl = $lrUrl->withHost($this->domain->fqdn);
+    $this->client->setLoginrocketUrl($lrUrl);
+
+    $res = $this->client->sessions->fromToken('blahblah');
+    $this->assertNull($res);
+
+    $res = $this->client->sessions->fromToken($this->session->token);
+    $this->assertEquals(1, count(Loginrocket::$jwkSet), 'jwtSet should be populated');
     $this->assertInstanceOf('\AuthRocket\Response', $res);
     $this->assertEquals('session', $res->object);
     $this->assertEquals('user', $res->user['object']);

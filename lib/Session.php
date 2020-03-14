@@ -11,9 +11,17 @@ class Session extends Resource {
   }
 
   function fromToken($token, $params=[]) {
+    if (!$this->client->getDefaultJwtKey() && $this->client->getLoginrocketUrl()) {
+      return $this->fromTokenWithDynamicKey($token, $params);
+    } else {
+      return $this->fromTokenWithStaticKey($token, $params);
+    }
+  }
+
+  private function fromTokenWithStaticKey($token, $params=[]) {
     $jwtKey = $this->client->getDefaultJwtKey();
     if (!is_string($jwtKey)) {
-      throw new Error("Missing jwtKey - set AUTHROCKET_JWT_KEY or new AuthRocket(['jwtKey'=>...])");
+      throw new Error("Missing jwtKey - set LOGINROCKET_URL, AUTHROCKET_JWT_KEY, or new AuthRocket(['loginrocketUrl'=>... or 'jwtKey'=>...])");
     }
     $jwtKey = trim($jwtKey);
 
@@ -27,12 +35,39 @@ class Session extends Resource {
       $algo = ['HS256'];
     }
 
+    return $this->verifyAndParse($token, $jwtKey, $algo);
+  }
+
+  private function fromTokenWithDynamicKey($token, $params=[]) {
+    if (!$token) return null;
+    try {
+      $hdr = explode('.', $token)[0];
+      $jwtHeader = \Firebase\JWT\JWT::jsonDecode(\Firebase\JWT\JWT::urlsafeB64Decode($hdr));
+    } catch (\Exception $e) {
+      return null;
+    }
+    if (!$jwtHeader || !$jwtHeader->kid) return null;
+    $kid = $jwtHeader->kid;
+    if (!Loginrocket::getJwkSetKey($kid)) {
+      $this->client->loginrocket->loadJwkSet();
+    }
+    if ($jwk = Loginrocket::getJwkSetKey($kid)) {
+      return $this->verifyAndParse($token, $jwk['key'], [$jwk['algo']]);
+    }
+    return null;
+  }
+
+  private function verifyAndParse($token, $jwtKey, $algo) {
     \Firebase\JWT\JWT::$leeway = 5;
     try {
       $jwt = \Firebase\JWT\JWT::decode($token, $jwtKey, $algo);
     } catch (\UnexpectedValueException $e) {
       return null;
     }
+    return $this->jwtToSession($jwt, $token);
+  }
+
+  private function jwtToSession($jwt, $token) {
     $jwt = (array) $jwt;
 
     foreach (['cs', 'email_verified', 'given_name', 'family_name', 'orgs', 'preferred_username', 'ref'] as $attr) {
@@ -54,7 +89,7 @@ class Session extends Resource {
       'custom'             => $jwt['cs']
     ];
     if ($jwt['orgs']) {
-      $mbs = $user['memberships'] = [];
+      $user['memberships'] = [];
       foreach ($jwt['orgs'] as $m) {
         $m = (array)$m;
         foreach (['cs', 'name', 'perm', 'ref', 'selected'] as $attr) {
@@ -77,9 +112,8 @@ class Session extends Resource {
             'custom'    => $m['cs']
           ]
         ];
-        array_push($mbs, $m2);
+        array_push($user['memberships'], $m2);
       }
-      $user['memberships'] = $mbs;
     }
     $session = [
       'object'     => 'session',

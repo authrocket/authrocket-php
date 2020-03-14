@@ -1,3 +1,7 @@
+#### 2.1.0
+
+- Enable auto-loading JWT keys from LoginRocket
+
 #### 2.0.0
 
 NOTE: This version is only compatible with AuthRocket 2. Use package version 1.x with AuthRocket 1.
