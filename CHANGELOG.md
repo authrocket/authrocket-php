@@ -1,3 +1,7 @@
+#### 1.2.1
+
+- Update certs
+
 #### 1.2.0
 
 - add Credential
