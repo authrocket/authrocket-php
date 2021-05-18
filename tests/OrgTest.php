@@ -38,8 +38,14 @@ class OrgTest extends TestCase {
     $this->assertEquals('new name', $res->name);
   }
 
-  function testDelete() {
+  function testDeleteAsClose() {
     $res = $this->client->orgs->delete($this->org->id);
+    $this->assertNoError($res);
+    $this->assertEquals('closed', $res->state);
+  }
+
+  function testDeleteAsDelete() {
+    $res = $this->client->orgs->delete($this->org->id, ['force'=>true]);
     $this->assertNoError($res);
     $res = $this->client->orgs->all();
     $this->assertNoError($res);

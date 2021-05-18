@@ -76,9 +76,9 @@ class UserTest extends TestCase {
     $res = $this->client->users->authenticate($this->user->id, [
       'password' => 'wrong'
     ]);
-    $this->assertMatchesError('/Password is invalid/', $res);
+    $this->assertMatchesError('/Login failed/', $res);
 
-    $res = $this->client->users->authenticate($this->user->email,[
+    $res = $this->client->users->authenticate($this->user->email, [
       'password' => 'quick-fox-jumped-over-the-moon'
     ]);
     $this->assertNoError($res);
