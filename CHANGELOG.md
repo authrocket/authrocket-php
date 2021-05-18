@@ -1,3 +1,7 @@
+#### 2.2.0
+
+- Use system's CA certificate store instead
+
 #### 2.1.0
 
 - Enable auto-loading JWT keys from LoginRocket
@@ -10,6 +14,10 @@ NOTE: This version is only compatible with AuthRocket 2. Use package version 1.x
 - Rename ENV AUTHROCKET_JWT_SECRET -> AUTHROCKET_JWT_KEY and jwtSecret -> jwtKey
 - Add Invitation
 - Update Session, User
+
+#### 1.2.1
+
+- Update certs
 
 #### 1.2.0
 

@@ -127,7 +127,7 @@ class AuthRocket {
       'timeout'         => 50,
       'debug'           => $this->debug,
       'headers'         => $this->config['headers'],
-      'verify'          => $this->config['verifySsl'] ? dirname(dirname(__FILE__)).'/data/ca-certificates.crt' : false,
+      'verify'          => $this->config['verifySsl'],
     ]);
 
     return $this->api;
@@ -148,7 +148,7 @@ class AuthRocket {
         'Accept-Encoding' => 'gzip',
         'User-Agent'      => "AuthRocket/php v".AuthRocket::VERSION,
       ],
-      'verify'          => $this->config['verifySsl'] ? dirname(dirname(__FILE__)).'/data/ca-certificates.crt' : false,
+      'verify'          => $this->config['verifySsl'],
     ]);
 
     return $this->lrApi;
