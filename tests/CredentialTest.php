@@ -4,7 +4,7 @@ namespace AuthRocket;
 
 class CredentialTest extends TestCase {
 
-  function setUp() {
+  function setUp(): void {
     parent::setUp();
     $this->createUser();
     $this->credential = $this->user->credentials[0];
@@ -22,7 +22,7 @@ class CredentialTest extends TestCase {
     $res = $this->client->credentials->create(['user_id'=>$this->user->id, 'auth_provider_id'=>$this->authProvider->id, 'credential_type'=>'totp', 'name'=>'Test']);
     $this->assertNoError($res);
     $this->assertEquals('credential', $res->object);
-    $this->assertRegExp('/^crd_/', $res->id);
+    $this->assertMatchesRegularExpression('/^crd_/', $res->id);
   }
 
   function testUpdate() {

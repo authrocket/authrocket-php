@@ -6,21 +6,21 @@ namespace AuthRocket;
 
 class TestCase extends \PHPUnit\Framework\TestCase {
 
-  static function setUpBeforeClass() {
+  static function setUpBeforeClass(): void {
     error_reporting(E_ALL);
   }
 
-  static function tearDownAfterClass() {
+  static function tearDownAfterClass(): void {
     self::deleteStaleRealms();
   }
 
-  function setUp() {
+  function setUp(): void {
     $this->client = self::buildClient();
     $this->createRealm();
     $this->client->setDefaultRealm($this->realm->id);
   }
 
-  function tearDown() {
+  function tearDown(): void {
     $this->deleteRealm();
   }
 
@@ -31,7 +31,7 @@ class TestCase extends \PHPUnit\Framework\TestCase {
   }
 
   function assertMatchesError($regexp, $response) {
-    $this->assertRegExp($regexp, $response->errorMessages());
+    $this->assertMatchesRegularExpression($regexp, $response->errorMessages());
   }
 
 

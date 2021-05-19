@@ -4,12 +4,12 @@ namespace AuthRocket;
 
 class SessionTest extends TestCase {
 
-  function setUp() {
+  function setUp(): void {
     parent::setUp();
     $this->createSession();
   }
 
-  function tearDown() {
+  function tearDown(): void {
     $this->client->setDefaultJwtKey(null);
     parent::tearDown();
   }
@@ -28,12 +28,10 @@ class SessionTest extends TestCase {
     $this->assertEquals('session', $res->object);
   }
 
-  /**
-   * @expectedException AuthRocket\Error
-   */
   function testFromTokenMissingKey() {
     $this->client->setDefaultJwtKey(null);
     $this->client->setLoginrocketUrl(null);
+    $this->expectException(\AuthRocket\Error::class);
     $this->client->sessions->fromToken($this->session->token);
   }
 
@@ -49,7 +47,7 @@ class SessionTest extends TestCase {
     $res = $this->client->sessions->fromToken($this->session->token);
     $this->assertNull($res);
 
-    $this->assertRegExp('/^jsk_/', $this->realm->jwt_key);
+    $this->assertMatchesRegularExpression('/^jsk_/', $this->realm->jwt_key);
     $this->client->setDefaultJwtKey($this->realm->jwt_key);
     $res = $this->client->sessions->fromToken('blahblah');
     $this->assertNull($res);
@@ -63,7 +61,7 @@ class SessionTest extends TestCase {
   }
 
   function testFromTokenRs256() {
-    $this->assertRegExp('/PUBLIC KEY/', $this->realm->jwt_key);
+    $this->assertMatchesRegularExpression('/PUBLIC KEY/', $this->realm->jwt_key);
     $this->client->setDefaultJwtKey($this->realm->jwt_key);
     $res = $this->client->sessions->fromToken('blahblah');
     $this->assertNull($res);

@@ -4,7 +4,7 @@ namespace AuthRocket;
 
 class OrgTest extends TestCase {
 
-  function setUp() {
+  function setUp(): void {
     parent::setUp();
     $this->createOrg();
   }
@@ -28,7 +28,7 @@ class OrgTest extends TestCase {
     $res = $this->client->orgs->create(['name'=>'hello']);
     $this->assertNoError($res);
     $this->assertEquals('org', $res->object);
-    $this->assertRegExp('/^org_/', $res->id);
+    $this->assertMatchesRegularExpression('/^org_/', $res->id);
   }
 
   function testUpdate() {

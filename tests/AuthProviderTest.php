@@ -4,7 +4,7 @@ namespace AuthRocket;
 
 class AuthProviderTest extends TestCase {
 
-  function setUp() {
+  function setUp(): void {
     parent::setUp();
     $this->createRealm();
     $this->authProvider = $this->client->authProviders->first();
@@ -33,7 +33,7 @@ class AuthProviderTest extends TestCase {
     ]);
     $this->assertNoError($res);
     $this->assertEquals('auth_provider', $res->object);
-    $this->assertRegExp('/^ap_/', $res->id);
+    $this->assertMatchesRegularExpression('/^ap_/', $res->id);
   }
 
   function testUpdate() {
@@ -98,7 +98,7 @@ class AuthProviderTest extends TestCase {
       'state' => $pairSet['state']
     ]);
     $this->assertMatchesError('/Error validating code/', $res);
-    $this->assertRegExp('/^http/', $res->metadata['retry_url']);
+    $this->assertMatchesRegularExpression('/^http/', $res->metadata['retry_url']);
 
     $res = $this->client->authProviders->authorize([
       'code'  => 'abcdefgh',

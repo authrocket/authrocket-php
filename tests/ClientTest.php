@@ -4,11 +4,11 @@ namespace AuthRocket;
 
 class ClientTest extends TestCase {
 
-  function setUp() {
+  function setUp(): void {
     // skip default setUp()
   }
 
-  function tearDown() {
+  function tearDown(): void {
     // skip default tearDown()
   }
 
@@ -31,11 +31,9 @@ class ClientTest extends TestCase {
     $this->assertEquals('jsk_SAMPLE', $client->getDefaultJwtKey());
   }
 
-  /**
-   * @expectedException AuthRocket\Error
-   */
   function testLoginrocketUrlEmpty() {
     $client = new \AuthRocket\AuthRocket([]);
+    $this->expectException(\AuthRocket\Error::class);
     $client->getLoginrocketUrl();
   }
 

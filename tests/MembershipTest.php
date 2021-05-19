@@ -4,7 +4,7 @@ namespace AuthRocket;
 
 class MembershipTest extends TestCase {
 
-  function setUp() {
+  function setUp(): void {
     parent::setUp();
     $this->createMembership();
   }
@@ -31,7 +31,7 @@ class MembershipTest extends TestCase {
       ]);
     $this->assertNoError($res);
     $this->assertEquals('membership', $res->object);
-    $this->assertRegExp('/^mb_/', $res->id);
+    $this->assertMatchesRegularExpression('/^mb_/', $res->id);
   }
 
   function testUpdate() {

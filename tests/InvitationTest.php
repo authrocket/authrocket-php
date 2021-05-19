@@ -4,7 +4,7 @@ namespace AuthRocket;
 
 class InvitationTest extends TestCase {
 
-  function setUp() {
+  function setUp(): void {
     parent::setUp();
     $this->createInvitation();
   }
@@ -36,7 +36,7 @@ class InvitationTest extends TestCase {
     ]);
     $this->assertNoError($res);
     $this->assertEquals('invitation', $res->object);
-    $this->assertRegExp('/^nvt_/', $res->id);
+    $this->assertMatchesRegularExpression('/^nvt_/', $res->id);
     $this->assertTrue(is_string($res->token));
   }
 

@@ -4,7 +4,7 @@ namespace AuthRocket;
 
 class RealmTest extends TestCase {
 
-  function setUp() {
+  function setUp(): void {
     // parent::setUp();
     $this->client = self::buildClient();
     $this->createRealm();
@@ -29,10 +29,8 @@ class RealmTest extends TestCase {
     $this->assertNull($res->made_up_field);
   }
 
-  /**
-   * @expectedException AuthRocket\RecordNotFound
-   */
   function testInvalidFind() {
+    $this->expectException(\AuthRocket\RecordNotFound::class);
     $res = $this->client->realms->find('rl_invalid');
   }
 
@@ -40,7 +38,7 @@ class RealmTest extends TestCase {
     $res = $this->client->realms->create(['name'=>'AR-php hello '.rand()]);
     $this->assertNoError($res);
     $this->assertEquals('realm', $res->object);
-    $this->assertRegExp('/^rl_/', $res->id);
+    $this->assertMatchesRegularExpression('/^rl_/', $res->id);
   }
 
   function testUpdate() {
@@ -51,14 +49,12 @@ class RealmTest extends TestCase {
     $this->assertEquals($newName, $res->name);
   }
 
-  /**
-   * @expectedException AuthRocket\RecordNotFound
-   */
   function testDelete() {
     $id = $this->realm->id;
     $res = $this->client->realms->delete($id);
     $this->assertNoError($res);
     $this->realm = null;
+    $this->expectException(\AuthRocket\RecordNotFound::class);
     $res = $this->client->realms->find($id, ['state'=>'active']);
   }
 

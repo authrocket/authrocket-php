@@ -4,7 +4,7 @@ namespace AuthRocket;
 
 class UserTest extends TestCase {
 
-  function setUp() {
+  function setUp(): void {
     parent::setUp();
     $this->createUser();
   }
@@ -31,7 +31,7 @@ class UserTest extends TestCase {
     ]);
     $this->assertNoError($res);
     $this->assertEquals('user', $res->object);
-    $this->assertRegExp('/^usr_/', $res->id);
+    $this->assertMatchesRegularExpression('/^usr_/', $res->id);
   }
 
   function testUpdate() {
@@ -104,7 +104,7 @@ class UserTest extends TestCase {
     $res = $this->client->users->requestEmailVerification($this->user->id);
     $this->assertNoError($res);
     $this->assertEquals('token', $res->object);
-    $this->assertRegExp('/^tve:/', $res->token);
+    $this->assertMatchesRegularExpression('/^tve:/', $res->token);
   }
 
   function testVerifyEmail() {
@@ -120,7 +120,7 @@ class UserTest extends TestCase {
     $res = $this->client->users->generatePasswordToken($this->user->id);
     $this->assertNoError($res);
     $this->assertEquals('token', $res->object);
-    $this->assertRegExp('/^tpw:/', $res->token);
+    $this->assertMatchesRegularExpression('/^tpw:/', $res->token);
   }
 
   function testResetPasswordWithToken() {
