@@ -1,3 +1,7 @@
+#### 1.3.0
+
+- Use system's CA certificate store instead
+
 #### 1.2.1
 
 - Update certs

@@ -104,7 +104,7 @@ class AuthRocket {
       'timeout'         => 50,
       'debug'           => $this->debug,
       'headers'         => $this->config['headers'],
-      'verify'          => $this->config['verifySsl'] ? dirname(dirname(__FILE__)).'/data/ca-certificates.crt' : false,
+      'verify'          => $this->config['verifySsl'],
     ]);
 
     return $this->api;
