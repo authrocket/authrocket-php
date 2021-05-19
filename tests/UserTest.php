@@ -86,6 +86,20 @@ class UserTest extends TestCase {
     $this->assertTrue(is_string($res->token));
   }
 
+  function testAuthenticateWithLocale() {
+    $this->client->setLocale('es');
+    $res = $this->client->users->authenticate($this->user->id, [
+      'password' => 'wrong'
+    ]);
+    $this->assertMatchesError('/Error al iniciar sesión/', $res);
+
+    $this->client->setLocale(null);
+    $res = $this->client->users->authenticate($this->user->id, [
+      'password' => 'wrong'
+    ]);
+    $this->assertMatchesError('/Login failed/', $res);
+  }
+
   function testRequestEmailVerification() {
     $res = $this->client->users->requestEmailVerification($this->user->id);
     $this->assertNoError($res);

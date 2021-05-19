@@ -30,7 +30,7 @@ class RecordNotFound extends Error {}
 
 class AuthRocket {
 
-  const VERSION = '2.1.0';
+  const VERSION = '2.2.0';
 
 
   private $api;
@@ -56,7 +56,7 @@ class AuthRocket {
   }
 
   function __construct(array $params) {
-    foreach (['url', 'apiKey', 'realm', 'service', 'jwtKey', 'loginrocketUrl'] as $p) {
+    foreach (['url', 'apiKey', 'realm', 'service', 'jwtKey', 'loginrocketUrl', 'locale'] as $p) {
       if (!isset($params[$p]))
         $params[$p] = null;
     }
@@ -74,6 +74,7 @@ class AuthRocket {
       $this->config['headers']['Authrocket-Service'] = $params['service'];
     if ($params['realm'])
       $this->config['headers']['Authrocket-Realm'] = $params['realm'];
+    $this->setLocale($params['locale']);
 
     $this->config['url'] = $params['url'];
     if ($this->config['url'][strlen($this->config['url'])-1] != '/')
@@ -106,6 +107,14 @@ class AuthRocket {
     $this->config['headers']['Authrocket-Realm'] = $realmId;
   }
 
+  public function setLocale($locale) {
+    $this->api = null;
+    if ($locale)
+      $this->config['headers']['Accept-Language'] = $locale;
+    else
+      unset($this->config['headers']['Accept-Language']);
+  }
+
   public function getLoginrocketUrl() {
     if (!$this->config['loginrocketUrl'])
       throw new Error("Missing loginrocketUrl: set LOGINROCKET_URL or AuthRocket(['loginrocketUrl'=>...])");
@@ -113,6 +122,7 @@ class AuthRocket {
  }
 
   public function setLoginrocketUrl($lrUrl) {
+    $this->lrApi = null;
     $this->config['loginrocketUrl'] = $lrUrl;
   }
 

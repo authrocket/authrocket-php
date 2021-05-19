@@ -74,6 +74,14 @@ $client = \AuthRocket\AuthRocket::autoConfigure([
 ]);
 ```
 
+Similarly, if changing locales between requests, build a new client for each:
+
+```php
+$client = \AuthRocket\AuthRocket::autoConfigure([
+  'locale' => 'es'
+]);
+```
+
 
 ### Direct configuration
 
@@ -85,7 +93,8 @@ $client = new \AuthRocket\AuthRocket([
   'url'            => 'https://api-e2.authrocket.com/v2',
   'realm'          => 'rl_SAMPLE',
   'jwtKey'         => 'SAMPLE',
-  'loginrocketUrl' => 'https://SAMPLE.e2.loginrocket.com/'
+  'loginrocketUrl' => 'https://SAMPLE.e2.loginrocket.com/',
+  'locale'         => 'en'
 ]);
 ```
 

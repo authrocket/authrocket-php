@@ -1,5 +1,6 @@
 #### 2.2.0
 
+- Add locale support
 - Use system's CA certificate store instead
 
 #### 2.1.0
