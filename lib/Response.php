@@ -40,6 +40,9 @@ class Response {
   static function decodeBody($res) {
     $body = (string) $res->getBody();
 
+    if ($body == '') {
+      return null;
+    }
     if ($res->hasHeader('Content-Type') && preg_match('/^application\/json/', $res->getHeader('Content-Type')[0])) {
       $body = json_decode($body, true);
 
