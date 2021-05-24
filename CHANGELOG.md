@@ -1,3 +1,7 @@
+#### 2.3.0
+
+- Update dependencies
+
 #### 2.2.0
 
 - Add locale support
@@ -15,6 +19,11 @@ NOTE: This version is only compatible with AuthRocket 2. Use package version 1.x
 - Rename ENV AUTHROCKET_JWT_SECRET -> AUTHROCKET_JWT_KEY and jwtSecret -> jwtKey
 - Add Invitation
 - Update Session, User
+
+#### 1.3.0
+
+- Use system's CA certificate store instead
+- Fix parsing error
 
 #### 1.2.1
 

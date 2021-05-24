@@ -30,7 +30,7 @@ class RecordNotFound extends Error {}
 
 class AuthRocket {
 
-  const VERSION = '2.2.0';
+  const VERSION = '2.3.0';
 
 
   private $api;
