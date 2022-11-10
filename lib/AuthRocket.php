@@ -77,7 +77,7 @@ class AuthRocket {
     $this->setLocale($params['locale']);
 
     $this->config['url'] = $params['url'];
-    if ($this->config['url'][strlen($this->config['url'])-1] != '/')
+    if ($this->config['url'] && $this->config['url'][strlen($this->config['url'])-1] != '/')
       $this->config['url'] .= '/';
     $this->config['verifySsl'] = !isset($params['verifySsl']) || $params['verifySsl'];
 

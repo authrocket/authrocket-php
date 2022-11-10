@@ -1,7 +1,5 @@
 <?php
 
-use PHPUnit\Framework\TestCase;
-
 namespace AuthRocket;
 
 class TestCase extends \PHPUnit\Framework\TestCase {
