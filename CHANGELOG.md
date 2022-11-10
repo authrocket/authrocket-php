@@ -1,3 +1,9 @@
+#### 2.4.0
+
+- Drop semicolon from Response errorMessages()
+- Fix PHP 8 warnings
+- Update dependencies
+
 #### 2.3.0
 
 - Update dependencies
