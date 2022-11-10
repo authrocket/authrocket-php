@@ -26,13 +26,13 @@ class Session extends Resource {
     $jwtKey = trim($jwtKey);
 
     if (strlen($jwtKey) > 256) {
-      $algo = ['RS256'];
+      $algo = 'RS256';
       if (!preg_match('/^-----BEGIN /', $jwtKey)) {
         $jwtKey = preg_replace('/[^\n]{64}/', "$0\n", $jwtKey);
         $jwtKey = "-----BEGIN PUBLIC KEY-----\n".$jwtKey."\n-----END PUBLIC KEY-----";
       }
     } else {
-      $algo = ['HS256'];
+      $algo = 'HS256';
     }
 
     return $this->verifyAndParse($token, $jwtKey, $algo);
@@ -52,7 +52,7 @@ class Session extends Resource {
       $this->client->loginrocket->loadJwkSet();
     }
     if ($jwk = Loginrocket::getJwkSetKey($kid)) {
-      return $this->verifyAndParse($token, $jwk['key'], [$jwk['algo']]);
+      return $this->verifyAndParse($token, $jwk['key'], $jwk['algo']);
     }
     return null;
   }
@@ -60,7 +60,7 @@ class Session extends Resource {
   private function verifyAndParse($token, $jwtKey, $algo) {
     \Firebase\JWT\JWT::$leeway = 5;
     try {
-      $jwt = \Firebase\JWT\JWT::decode($token, $jwtKey, $algo);
+      $jwt = \Firebase\JWT\JWT::decode($token, new \Firebase\JWT\Key($jwtKey, $algo), [$algo]);
     } catch (\UnexpectedValueException $e) {
       return null;
     }
