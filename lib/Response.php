@@ -64,7 +64,7 @@ class Response {
   }
 
   function errorMessages() {
-    return implode('; ', $this->errors);
+    return implode(' ', $this->errors);
   }
 
   function toArray() {
